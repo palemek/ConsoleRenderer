@@ -4,7 +4,7 @@ import M_tris3 as mTri3
 import M_tris2 as mTri2
 import M_objects3 as mObjects
 import math
-import os
+from ctypes import *
 
 def Initialize(xres, yres):
   global XRES
@@ -76,6 +76,12 @@ def _drawTri(tris, cS):
                     _drawPixel(j, i, tris[3]);
                     _drawDepth(j, i, dpth)
 
+
+class COORD(Structure):
+    pass
+  
+COORD._fields_ = [("X", c_short), ("Y", c_short)]
+
 def _drawScreen():
   temp = ""
   
@@ -87,9 +93,10 @@ def _drawScreen():
     for j in range(0,XRES):
       temp += GRAPHICS[i][j]
     temp += '\n'
-    
-  clear = lambda: os.system('cls')
-  clear()
+
+  h = windll.kernel32.GetStdHandle(-11)
+  windll.kernel32.SetConsoleCursorPosition(h, COORD(0, 0))
+  
   print(temp)
 
 def _drawPixel(i,j,m):
