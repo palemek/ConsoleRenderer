@@ -13,8 +13,12 @@ def distToPlane(x,tri):
     a = tri[0]
     return math.fabs(vec3.dot(n,vec3.sub(a,x)));
 
-#(trace start, plane normal, point on plane, trace dir)
+#(trace start, triangle, trace dir)
 def tracePlaneDist(x,tri,v):
     n = tri[4]#nrm(tri)
     h = distToPlane(x,tri)
-    return math.fabs(h/vec3.dot(v,n));
+    d = -vec3.dot(v,n)
+    if d <= 0:
+        return 10000 #big number
+    else:
+        return h/d;

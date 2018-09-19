@@ -24,6 +24,26 @@ class OBJECT:
     self.VX = mVec3.inv(self.VY)
     self.VY = temp
 
+  def importNew(self, path):
+    file = open(path,"r")
+    tempTris = []
+    tempNrms = []
+    tempVerts = []
+    for line in file:
+      words = line.split()
+      if words[0] == 'v':
+        tempVerts.append([float(words[1]),float(words[2]),float(words[3])])
+      elif words[0] == 'vn':
+        tempNrms.append([float(words[1]),float(words[2]),float(words[3])])
+      elif words[0] == 'f':
+        tempTris.append([tempVerts[int(words[1].split("//")[0])-1],
+                        tempVerts[int(words[2].split("//")[0])-1],
+                        tempVerts[int(words[3].split("//")[0])-1],
+                        chr((len(tempTris)%91) + 34),
+                        tempNrms[int(words[1].split("//")[1])-1]
+                        ])
+    self.TRIS = tempTris;
+
 class BOX(OBJECT):
   def __init__(self):
     OBJECT.__init__(self);
@@ -51,11 +71,16 @@ def dirVecToWS(v,obj):
       mVec3.mul(obj.VY,v[1])),
     mVec3.mul(obj.VZ,v[2]))
 
-def triToWS(tri,obj):
+def triToWS(tri,obj):
+
   return [mVec3.add(mVec3.scale(dirVecToWS(tri[0],obj),obj.SCALE),obj.POSITION),
-          mVec3.add(mVec3.scale(dirVecToWS(tri[1],obj),obj.SCALE),obj.POSITION),
-          mVec3.add(mVec3.scale(dirVecToWS(tri[2],obj),obj.SCALE),obj.POSITION),
-          tri[3],
+
+          mVec3.add(mVec3.scale(dirVecToWS(tri[1],obj),obj.SCALE),obj.POSITION),
+
+          mVec3.add(mVec3.scale(dirVecToWS(tri[2],obj),obj.SCALE),obj.POSITION),
+
+          tri[3],
+
           dirVecToWS(tri[4],obj)]
 
 def TrisFromQuad(A,B,C,D,M):
